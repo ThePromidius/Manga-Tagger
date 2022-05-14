@@ -65,7 +65,7 @@ def process_manga_chapter(file_path: Path, event_id):
 
     manga_details = filename_parser(filename, logging_info)
 
-    metadata_tagger(file_path, manga_details[0], manga_details[1], manga_details[2], logging_info)
+    metadata_tagger(file_path, manga_details[0], manga_details[1], manga_details[2], logging_info,manga_details[3])
 
     # Remove manga directory if empty
     try:
@@ -159,8 +159,12 @@ def filename_parser(filename, logging_info):
     LOG.debug(f'chapter_number: {chapter_number}')
 
     logging_info['chapter_number'] = chapter_number
-
-    return manga_title, chapter_number, format
+    volume = re.findall(r"(?:Vol|v|volume)(?:\s|\.)?(?:\s|\.)?([0-9]+(?:\.[0-9]+)?)",chapter_title)
+    if volume:
+        volume = volume[0]
+    else:
+        volume = None
+    return manga_title, chapter_number, format, volume
 
 
 def rename_action(current_file_path: Path, new_file_path: Path, manga_title, chapter_number, logging_info):
@@ -256,7 +260,7 @@ def compare_versions(old_filename: str, new_filename: str):
         return False
 
 
-def metadata_tagger(file_path, manga_title, manga_chapter_number, format, logging_info):
+def metadata_tagger(file_path, manga_title, manga_chapter_number, format, logging_info,volume):
     manga_search = None
     db_exists = True
     retries = 0
@@ -318,7 +322,10 @@ def metadata_tagger(file_path, manga_title, manga_chapter_number, format, loggin
         series_title_legal = slugify(series_title)
         manga_library_dir = Path(AppSettings.library_dir, series_title_legal)
         try:
-            new_filename = f"{series_title_legal} {manga_chapter_number}.cbz"
+            if volume is not None:
+                new_filename = f"{series_title_legal} Vol.{volume} {manga_chapter_number}.cbz"
+            else:
+                new_filename = f"{series_title_legal} {manga_chapter_number}.cbz"
             LOG.debug(f'new_filename: {new_filename}')
         except TypeError:
             LOG.warning(f'Manga Tagger was unable to process "{file_path}"', extra=logging_info)
@@ -383,7 +390,10 @@ def metadata_tagger(file_path, manga_title, manga_chapter_number, format, loggin
         LOG.debug(f'anilist_details: {anilist_details}')
 
         try:
-            new_filename = f"{series_title_legal} {manga_chapter_number}.cbz"
+            if volume is not None:
+                new_filename = f"{series_title_legal} Vol.{volume} {manga_chapter_number}.cbz"
+            else:
+                new_filename = f"{series_title_legal} {manga_chapter_number}.cbz"
             LOG.debug(f'new_filename: {new_filename}')
         except TypeError:
             LOG.warning(f'Manga Tagger was unable to process "{file_path}"', extra=logging_info)
@@ -451,7 +461,7 @@ def metadata_tagger(file_path, manga_title, manga_chapter_number, format, loggin
         else:
             LOG.info('Image Directory not set, not downloading series cover image.', extra=logging_info)
 
-        comicinfo_xml = construct_comicinfo_xml(manga_metadata, manga_chapter_number, logging_info)
+        comicinfo_xml = construct_comicinfo_xml(manga_metadata, manga_chapter_number, logging_info,volume)
         reconstruct_manga_chapter(series_title, comicinfo_xml, new_file_path, logging_info)
 
     LOG.info(f'Processing on "{new_file_path}" has finished.', extra=logging_info)
@@ -471,7 +481,7 @@ def construct_anilist_titles(anilist_details):
 
     return anilist_titles
 
-def construct_comicinfo_xml(metadata, chapter_number, logging_info):
+def construct_comicinfo_xml(metadata, chapter_number, logging_info,volume_number):
     LOG.info(f'Constructing comicinfo object for "{metadata.series_title}", chapter {chapter_number}...',
              extra=logging_info)
 
@@ -484,11 +494,16 @@ def construct_comicinfo_xml(metadata, chapter_number, logging_info):
     series.text = metadata.series_title
 
     if metadata.series_title_eng is not None and compare(metadata.series_title, metadata.series_title_eng) != 1:
-        alt_series = SubElement(comicinfo, 'AlternateSeries')
-        alt_series.text = metadata.series_title_eng
+    #     alt_series = SubElement(comicinfo, 'AlternateSeries')
+    #     alt_series.text = metadata.series_title_eng
+    # if metadata.series_title_eng is not None:
+        localized_series = SubElement(comicinfo,'LocalizedSeries')
 
     number = SubElement(comicinfo, 'Number')
     number.text = f'{chapter_number}'
+    if volume_number is not None:
+        volume = SubElement(comicinfo, 'Volume')
+        volume.text = f'{volume_number}'
 
     summary = SubElement(comicinfo, 'Summary')
     soup = BeautifulSoup(metadata.description, "html.parser")
