@@ -493,11 +493,9 @@ def construct_comicinfo_xml(metadata, chapter_number, logging_info,volume_number
     series = SubElement(comicinfo, 'Series')
     series.text = metadata.series_title
 
-    if metadata.series_title_eng is not None and compare(metadata.series_title, metadata.series_title_eng) != 1:
-    #     alt_series = SubElement(comicinfo, 'AlternateSeries')
-    #     alt_series.text = metadata.series_title_eng
-    # if metadata.series_title_eng is not None:
+    if metadata.series_title_eng is not None and compare(metadata.series_title, metadata.series_title_eng) != 1 and metadata.series_title_eng!="":
         localized_series = SubElement(comicinfo,'LocalizedSeries')
+        localized_series.text = metadata.series_title_eng
 
     number = SubElement(comicinfo, 'Number')
     number.text = f'{chapter_number}'
