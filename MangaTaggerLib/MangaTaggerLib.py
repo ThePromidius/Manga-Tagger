@@ -96,7 +96,11 @@ def filename_parser(filename, logging_info):
     LOG.debug(f'chapter: {chapter_title}')
 
     format = "MANGA"
-
+    volume = re.findall(r"(?i)(?:Vol|v|volume)(?:\s|\.)?(?:\s|\.)?([0-9]+(?:\.[0-9]+)?)",chapter_title)
+    if volume:
+        volume = volume[0]
+    else:
+        volume = None
     # If "chapter" is in the chapter substring
     try:
         if not hasNumbers(chapter_title):
@@ -159,11 +163,7 @@ def filename_parser(filename, logging_info):
     LOG.debug(f'chapter_number: {chapter_number}')
 
     logging_info['chapter_number'] = chapter_number
-    volume = re.findall(r"(?:Vol|v|volume)(?:\s|\.)?(?:\s|\.)?([0-9]+(?:\.[0-9]+)?)",chapter_title)
-    if volume:
-        volume = volume[0]
-    else:
-        volume = None
+
     return manga_title, chapter_number, format, volume
 
 
