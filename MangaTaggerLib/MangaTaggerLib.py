@@ -101,6 +101,12 @@ def filename_parser(filename, logging_info):
         volume = volume[0]
     else:
         volume = None
+
+    chapter = re.findall(r"(?i)(?:(?:ch|chapter|c)(?:\s|\.)?(?:\s|\.)?(?:([0-9]+(?:\.[0-9]+)?)+(?:-([0-9]+(?:\.[0-9]+)?))?))",chapter_title)
+    if chapter:
+        chapter = f"{chapter[0][0]}"
+    else:
+        chapter = None
     # If "chapter" is in the chapter substring
     try:
         if not hasNumbers(chapter_title):
@@ -163,8 +169,10 @@ def filename_parser(filename, logging_info):
     LOG.debug(f'chapter_number: {chapter_number}')
 
     logging_info['chapter_number'] = chapter_number
-
-    return manga_title, chapter_number, format, volume
+    if chapter is not None:
+        return manga_title, chapter, format, volume
+    else:
+        return manga_title, chapter_number, format, volume
 
 
 def rename_action(current_file_path: Path, new_file_path: Path, manga_title, chapter_number, logging_info):
