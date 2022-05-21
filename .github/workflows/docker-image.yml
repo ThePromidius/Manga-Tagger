@@ -1,9 +1,9 @@
-name: ci
-
+name: Build & Publish
 on:
   push:
     branches: [ main, develop ]
-
+env:
+  IMAGE_NAME: "thepromidius/manga-tagger"
 jobs:
   docker_dev:
     name: Build Nightly Docker if Develop push
@@ -23,7 +23,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: promidius/manga-tagger:nightly
+          tags: ${{ env.IMAGE_NAME }}:nightly
   docker_stable:
     name: Build Stable Docker if Main push
     runs-on: ubuntu-latest
@@ -46,4 +46,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: promidius/manga-tagger:latest
+          tags: ${{ env.IMAGE_NAME }}:latest
