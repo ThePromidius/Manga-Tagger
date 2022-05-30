@@ -1,4 +1,5 @@
-[![mt-hub-img]][mt-hub-lnk] 
+[![Python tests](https://github.com/ThePromidius/Manga-Tagger/actions/workflows/Run_Tests.yml/badge.svg)](https://github.com/ThePromidius/Manga-Tagger/actions/workflows/Run_Tests.yml)
+[![mt-hub-img]][mt-hub-lnk]
 
 ##  <a href="https://github.com/Banh-Canh/Manga-Tagger">ThePromidius/Manga-Tagger</a>
 ## Descriptions
@@ -8,7 +9,7 @@ This fork doesn't require FMD2. Running MangaTagger.py will make it watch the di
 Intended to be used in a docker container:
 https://hub.docker.com/r/thepromidius/manga-tagger
 
-input Files still have to be named like this (they can be in their own %MANGA% directory, or not) : %MANGA% -.- %CHAPTER%.cbz
+input Files still have to be named like this (they can be in their own %MANGA% directory, or not) : `%MANGA% -.- %CHAPTER%.cbz`
 
 ## Features:
 
@@ -140,3 +141,4 @@ In this case, this title isn't accurate enough to search on Anilist and this why
 
 [mt-hub-img]: https://img.shields.io/docker/pulls/thepromidius/manga-tagger.svg
 [mt-hub-lnk]: https://hub.docker.com/r/thepromidius/manga-tagger
+
