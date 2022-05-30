@@ -26,7 +26,6 @@ class TestMetadata(unittest.TestCase):
         self.models_AppSettings = patch1.start()
         self.addCleanup(patch1.stop)
         self.models_AppSettings.timezone = 'America/New_York'
-        self.models_AppSettings.library_dir = os.getcwd()
 
         patch2 = patch('MangaTaggerLib.MangaTaggerLib.MetadataTable')
         self.MetadataTable = patch2.start()
