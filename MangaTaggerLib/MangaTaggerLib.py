@@ -501,7 +501,7 @@ def construct_anilist_titles(anilist_details):
     return anilist_titles
 
 
-def construct_comicinfo_xml(metadata, chapter_number, logging_info, volume_number):
+def construct_comicinfo_xml(metadata: Metadata, chapter_number, logging_info, volume_number):
     LOG.info(f'Constructing comicinfo object for "{metadata.series_title}", chapter {chapter_number}...',
              extra=logging_info)
 
@@ -523,6 +523,10 @@ def construct_comicinfo_xml(metadata, chapter_number, logging_info, volume_numbe
     if volume_number is not None:
         volume = SubElement(comicinfo, 'Volume')
         volume.text = f'{volume_number}'
+
+    if metadata.volumes is not None:
+        count = SubElement(comicinfo,"Count")
+        count.text = f'{metadata.volumes}'
 
     summary = SubElement(comicinfo, 'Summary')
     soup = BeautifulSoup(metadata.description, "html.parser")
@@ -563,8 +567,8 @@ def construct_comicinfo_xml(metadata, chapter_number, logging_info, volume_numbe
         else:
             genre.text = f'{mg}'
 
-    #    web = SubElement(comicinfo, 'Web')
-    #    web.text = metadata.mal_url
+    web = SubElement(comicinfo, 'Web')
+    web.text = metadata.anilist_url
 
     language = SubElement(comicinfo, 'LanguageISO')
     language.text = 'en'
