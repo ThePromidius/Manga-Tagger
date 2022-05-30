@@ -1,7 +1,7 @@
 name: Build & Publish
 on:
   push:
-    branches: [ main, develop , dev ]
+    branches: [ main, develop , test ]
 env:
   IMAGE_NAME: "thepromidius/manga-tagger"
 jobs:
@@ -51,7 +51,7 @@ jobs:
   docker_test:
     name: Build test Docker image if test push
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/test' }}
+    if: ${{github.ref == 'refs/heads/test' }}
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
