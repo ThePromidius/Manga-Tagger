@@ -1,12 +1,13 @@
-name: Build & Publish
+name: Build Docker
 on:
   push:
     branches: [ main, develop , test ]
+
 env:
   IMAGE_NAME: "thepromidius/manga-tagger"
 jobs:
   docker_develop:
-    name: Build Nightly Docker if Develop push
+    name: Nightly Build
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
     steps:
@@ -25,7 +26,7 @@ jobs:
           push: true
           tags: ${{ env.IMAGE_NAME }}:nightly
   docker_stable:
-    name: Build Stable Docker if Main push
+    name: Stable Build
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     steps:
@@ -47,9 +48,8 @@ jobs:
         with:
           push: true
           tags: ${{ env.IMAGE_NAME }}:latest
-
   docker_test:
-    name: Build test Docker image if test push
+    name: Test Build
     runs-on: ubuntu-latest
     if: ${{github.ref == 'refs/heads/test' }}
     steps:
@@ -67,3 +67,4 @@ jobs:
         with:
           push: true
           tags: ${{ env.IMAGE_NAME }}:test
+
