@@ -1,7 +1,7 @@
 {
   "id": 80767,
   "status": "FINISHED",
-  "volumes": 12,
+  "volumes": 13,
   "siteUrl": "https://anilist.co/manga/80767",
   "title": {
 	"romaji": "3D Kanojo: Real Girl",
@@ -10,7 +10,7 @@
   },
   "type": "MANGA",
   "genres": [
-	"Romance"
+	  "Comedy", "Drama", "Romance", "Slice of Life"
   ],
   "startDate": {
 	"day": 23,
